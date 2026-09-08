@@ -1,13 +1,6 @@
 package com.gamebasic.game.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,10 +44,10 @@ public class Game {
     }
 
     public void updateProgress(
-        int currentHp,
-        int currentFloor,
-        GamePhase phase,
-        GameStatus status
+            int currentHp,
+            int currentFloor,
+            GamePhase phase,
+            GameStatus status
     ) {
         this.currentHp = currentHp;
         this.currentFloor = currentFloor;
