@@ -42,6 +42,7 @@ public class GameController {
         return ResponseEntity.ok(gameService.updateProgress(gameId, request));
     }
 
+    // @PatchMapping는 일부분만 수정가능
     @PatchMapping("/games/{gameId}")
     public ResponseEntity<Void> renameGame(
             @PathVariable Long gameId,

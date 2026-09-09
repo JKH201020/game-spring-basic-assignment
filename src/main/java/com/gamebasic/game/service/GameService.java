@@ -60,6 +60,10 @@ public class GameService {
     @Transactional
     public GameDetailResponse updateProgress(Long gameId, ProgressRequest request) {
         Game game = findGame(gameId);
+        // TODO (Lv 9): 끝난 게임 덮어쓰기 막기 구현함
+        // Game Status가 PLAYING이 아닐 때 Status를 수정하려고 하면 409 응답이 나오면서 Conflict 메세지 표시
+        if (game.isFinished()) throw new ResponseStatusException(HttpStatus.CONFLICT, "Conflict");
+
         game.updateProgress(
                 request.getCurrentHp(),
                 request.getCurrentFloor(),
