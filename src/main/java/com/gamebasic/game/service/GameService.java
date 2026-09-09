@@ -6,6 +6,7 @@ import com.gamebasic.game.dto.*;
 import com.gamebasic.game.entity.Game;
 import com.gamebasic.game.repository.GameRepository;
 import com.gamebasic.runcard.dto.CardResponse;
+import com.gamebasic.runcard.dto.DeckCountResponse;
 import com.gamebasic.runcard.dto.RunCardRequest;
 import com.gamebasic.runcard.entity.RunCard;
 import com.gamebasic.runcard.repository.RunCardRepository;
@@ -15,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +42,9 @@ public class GameService {
                 game.getCurrentFloor(),
                 game.getPhase(),
                 game.getStatus(),
-                deck
+                deck,
+                game.getCreatedAt(),
+                game.getUpdatedAt()
         );
     }
 
@@ -84,7 +89,9 @@ public class GameService {
                 game.getCurrentFloor(),
                 game.getPhase(),
                 game.getStatus(),
-                deck
+                deck,
+                game.getCreatedAt(),
+                game.getUpdatedAt()
         );
     }
 
@@ -93,15 +100,29 @@ public class GameService {
     public List<GameSummaryResponse> getGames() {
         List<Game> games = gameRepository.findAllByOrderByIdDesc();
         List<GameSummaryResponse> dtos = new ArrayList<>();
+        List<DeckCountResponse> counts = runCardRepository.countByGames(games);
+
+        Map<Long, Integer> deckSizeMap = counts.stream() // List<DeckCountResponse>를 스트림으로 변환
+                .collect(Collectors.toMap( // Collectors.toMap(키를 뽑는 함수, 값을 뽑는 함수)
+                        DeckCountResponse::getGameId,
+                        DeckCountResponse::getDeckSize
+                ));
 
         for (Game game : games) {
+            // 카드가 항상 존재한다면 deckSizeMap.get(game.getId())만 사용해도 됨
+            // 만약 카드가 없는 경우 countByGames에 결과가 나오지 않기 때문에 기본값 0을 반환하도록 함
+            int deskSize = deckSizeMap.getOrDefault(game.getId(), 0);
+
             GameSummaryResponse dto = new GameSummaryResponse(
                     game.getId(),
                     game.getPlayerName(),
                     game.getCurrentFloor(),
                     game.getCurrentHp(),
                     game.getPhase(),
-                    game.getStatus()
+                    game.getStatus(),
+                    game.getCreatedAt(),
+                    game.getUpdatedAt(),
+                    deskSize
             );
             dtos.add(dto);
         }
@@ -130,7 +151,9 @@ public class GameService {
                 game.getCurrentFloor(),
                 game.getPhase(),
                 game.getStatus(),
-                deck
+                deck,
+                game.getCreatedAt(),
+                game.getUpdatedAt()
         );
     }
 
