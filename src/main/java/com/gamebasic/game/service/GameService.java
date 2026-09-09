@@ -1,5 +1,7 @@
 package com.gamebasic.game.service;
 
+import com.gamebasic.common.exception.GameFinishedException;
+import com.gamebasic.common.exception.GameNotFoundException;
 import com.gamebasic.game.dto.*;
 import com.gamebasic.game.entity.Game;
 import com.gamebasic.game.repository.GameRepository;
@@ -7,12 +9,9 @@ import com.gamebasic.runcard.dto.CardResponse;
 import com.gamebasic.runcard.dto.RunCardRequest;
 import com.gamebasic.runcard.entity.RunCard;
 import com.gamebasic.runcard.repository.RunCardRepository;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +53,7 @@ public class GameService {
 
     private Game findGame(Long gameId) {
         return gameRepository.findById(gameId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new GameNotFoundException(gameId));
     }
 
     @Transactional
@@ -62,7 +61,7 @@ public class GameService {
         Game game = findGame(gameId);
         // TODO (Lv 9): 끝난 게임 덮어쓰기 막기 구현함
         // Game Status가 PLAYING이 아닐 때 Status를 수정하려고 하면 409 응답이 나오면서 Conflict 메세지 표시
-        if (game.isFinished()) throw new ResponseStatusException(HttpStatus.CONFLICT, "Conflict");
+        if (game.isFinished()) throw new GameFinishedException(gameId);
 
         game.updateProgress(
                 request.getCurrentHp(),
@@ -114,7 +113,7 @@ public class GameService {
     @Transactional(readOnly = true)
     public GameDetailResponse getGame(Long gameId) {
         Game game = gameRepository.findById(gameId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
+                () -> new GameNotFoundException(gameId)
         );
         List<RunCard> cards = runCardRepository.findAllByGameOrderByIdAsc(game);
         List<CardResponse> deck = cards.stream()
@@ -139,7 +138,7 @@ public class GameService {
     @Transactional
     public void renameGame(Long gameId, RenameRequest request) {
         Game game = gameRepository.findById(gameId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
+                () -> new GameNotFoundException(gameId)
         );
         game.rename(request.getPlayerName());
     }
@@ -148,11 +147,11 @@ public class GameService {
     @Transactional
     public void deleteGame(Long gameId) {
         Game game = gameRepository.findById(gameId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
+                () -> new GameNotFoundException(gameId)
         );
 
         boolean existenceGame = gameRepository.existsById(gameId);
-        if (!existenceGame) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        if (!existenceGame) throw new GameNotFoundException(gameId);
 
         runCardRepository.deleteAllByGame(game);
         gameRepository.deleteById(gameId);
