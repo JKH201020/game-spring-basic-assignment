@@ -64,7 +64,7 @@ public class GameService {
     @Transactional
     public GameDetailResponse updateProgress(Long gameId, ProgressRequest request) {
         Game game = findGame(gameId);
-        // TODO (Lv 9): 끝난 게임 덮어쓰기 막기 구현함
+        // TODO (Lv 9): 끝난 게임 덮어쓰기 막기(조건문)구현함
         // Game Status가 PLAYING이 아닐 때 Status를 수정하려고 하면 409 응답이 나오면서 Conflict 메세지 표시
         if (game.isFinished()) throw new GameFinishedException(gameId);
 
@@ -102,6 +102,7 @@ public class GameService {
         List<GameSummaryResponse> dtos = new ArrayList<>();
         List<DeckCountResponse> counts = runCardRepository.countByGames(games);
 
+        // TODO (Lv 11):
         Map<Long, Integer> deckSizeMap = counts.stream() // List<DeckCountResponse>를 스트림으로 변환
                 .collect(Collectors.toMap( // Collectors.toMap(키를 뽑는 함수, 값을 뽑는 함수)
                         DeckCountResponse::getGameId,

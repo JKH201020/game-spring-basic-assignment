@@ -15,6 +15,7 @@ import java.util.List;
 public class GameController {
     private final GameService gameService;
 
+    // TODO (Lv 7): 게임 목록 조회 API를 구현함
     @GetMapping("/games")
     public ResponseEntity<List<GameSummaryResponse>> getGames() {
         // List<Object>는 임시 구현이며, Lv 7에서 제대로 고칩니다.
@@ -22,6 +23,7 @@ public class GameController {
         return ResponseEntity.ok(gameService.getGames());
     }
 
+    // TODO (Lv 7): 게임 상세 조회 API를 구현함
     @GetMapping("/games/{gameId}")
     public ResponseEntity<GameDetailResponse> getGame(@PathVariable Long gameId) {
         return ResponseEntity.ok(gameService.getGame(gameId));
@@ -42,6 +44,7 @@ public class GameController {
         return ResponseEntity.ok(gameService.updateProgress(gameId, request));
     }
 
+    // TODO (Lv 8): 아래 2개 메서드 추가함
     // @PatchMapping는 일부분만 수정가능
     @PatchMapping("/games/{gameId}")
     public ResponseEntity<Void> renameGame(
