@@ -1,4 +1,5 @@
 # 붉은 달의 성채 (Crimson Citadel) — Game Basic Assignment
+(레벨 별로 브랜치 만들어서 커밋했습니다.)
 
 로그라이크 카드 게임 "붉은 달의 성채"의 백엔드 API 서버입니다. Spring Boot 기반으로 게임 진행 상태를 저장·관리하고, 외부 랭킹 API를 연동하여 시즌 랭킹을 제공합니다.
 
