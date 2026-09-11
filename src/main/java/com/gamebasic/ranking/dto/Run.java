@@ -10,10 +10,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class Run {
 
-    private final String seed;
     private final GameStatus status;
     private final int clearedFloor;
     private final int durationSeconds;
     private final int finalHp;
-    private final List<Floors> floors;
 }

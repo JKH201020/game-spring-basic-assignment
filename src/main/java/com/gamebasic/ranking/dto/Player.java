@@ -11,6 +11,4 @@ public class Player {
 
     private final String id;
     private final String name;
-    private final String region;
-    private final List<String> tags;
 }

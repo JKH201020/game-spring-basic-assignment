@@ -10,8 +10,6 @@ import java.time.LocalDateTime;
 public class Records {
 
     private final Long id;
-    private final LocalDateTime submittedAt;
-    private final Client client;
     private final Player player;
     private final Run run;
     private final BossFight bossFight;
